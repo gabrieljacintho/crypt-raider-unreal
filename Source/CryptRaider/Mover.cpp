@@ -38,6 +38,6 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 
 	Owner->SetActorLocation(NewLocation);
 
-	UE_LOG(LogTemp, Display, TEXT("Owner: %s"), *(*Owner).GetActorNameOrLabel());
+	//UE_LOG(LogTemp, Display, TEXT("Owner: %s"), *(*Owner).GetActorNameOrLabel());
 }
 
