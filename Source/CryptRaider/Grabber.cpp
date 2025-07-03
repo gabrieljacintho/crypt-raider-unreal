@@ -30,13 +30,17 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FRotator Rotation = GetComponentRotation();
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
 
-	UE_LOG(LogTemp, Display, TEXT("Rotation: %s"), *Rotation.ToCompactString());
+	FHitResult HitResult;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel2, Sphere);
 
-	UWorld* World = GetWorld();
-	double Seconds = World->TimeSeconds;
-
-	UE_LOG(LogTemp, Display, TEXT("Time seconds: %g"), Seconds);
+	if (HasHit)
+	{
+		UE_LOG(LogTemp, Display, TEXT("HIT: %s"), *HitResult.GetActor()->GetActorNameOrLabel());
+	}
 }
 
