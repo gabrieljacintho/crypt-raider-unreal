@@ -48,15 +48,8 @@ void UGrabber::Grab()
 		return;
 	}
 
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-
 	FHitResult HitResult;
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
-	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel2, Sphere);
-
-	if (HasHit)
+	if (GetGrabbableInReach(HitResult))
 	{
 		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 		HitComponent->WakeAllRigidBodies();
@@ -82,4 +75,15 @@ void UGrabber::Release()
 	PhysicsHandle->ReleaseComponent();
 
 	UE_LOG(LogTemp, Display, TEXT("Grabber: Release"));
+}
+
+bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
+{
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+
+	return GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel2, Sphere);
 }
